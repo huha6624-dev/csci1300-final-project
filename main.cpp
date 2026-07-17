@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include "planet.h"
 #include "KingPlanet.h"
 #include "Prince.h"
@@ -7,14 +8,22 @@
 using namespace std;
 
 int main() {
-    // Starter content for checkpoint 2; the full set of planets will
-    // grow in later checkpoints.
-    vector<Planet*> planets;
-    planets.push_back(new KingPlanet());
+    // Each planet is its own named object, created directly (no
+    // pointers, no "new"), the same way we've created objects like
+    // "Villager Tony;" in class.
+    KingPlanet king;
+
     // The Businessman doesn't have his own subclass yet; for now he's
     // just a plain Planet and will get his own quest logic (and
     // possibly his own subclass) in a later checkpoint.
-    planets.push_back(new Planet("The Businessman's Planet", "A planet occupied by a busy man who is endlessly counting the stars he says he owns."));
+    Planet businessman("The Businessman's Planet", "A planet occupied by a busy man who is endlessly counting the stars he says he owns.");
+
+    // A vector of strings just to hold the menu display names, in
+    // menu order. The planet objects themselves stay as their own
+    // separate named variables above.
+    vector<string> planetNames;
+    planetNames.push_back(king.getName());
+    planetNames.push_back(businessman.getName());
 
     Prince prince("Asteroid B-612");
     Rose rose;
@@ -35,16 +44,27 @@ int main() {
 
         if (choice == 1) {
             cout << endl << "Which planet?" << endl;
-            for (int i = 0; i < (int)planets.size(); i++) {
-                cout << (i + 1) << ". " << planets[i]->getName() << endl;
+            int total = planetNames.size();
+            for (int i = 0; i < total; i++) {
+                cout << (i + 1) << ". " << planetNames[i] << endl;
             }
             int pick;
             cin >> pick;
-            if (pick >= 1 && pick <= (int)planets.size()) {
-                prince.setCurrentPlanet(planets[pick - 1]->getName());
-                planets[pick - 1]->visit();
-            } else {
-                cout << "That planet doesn't exist yet." << endl;
+
+            // Switch on the pick to call visit() on the matching
+            // named object directly (dot notation, not "->").
+            switch (pick) {
+                case 1:
+                    prince.setCurrentPlanet(king.getName());
+                    king.visit();
+                    break;
+                case 2:
+                    prince.setCurrentPlanet(businessman.getName());
+                    businessman.visit();
+                    break;
+                default:
+                    cout << "That planet doesn't exist yet." << endl;
+                    break;
             }
         } else if (choice == 2) {
             rose.water();
@@ -58,10 +78,6 @@ int main() {
         } else {
             cout << "That's not a valid option. Try again." << endl;
         }
-    }
-
-    for (int i = 0; i < (int)planets.size(); i++) {
-        delete planets[i];
     }
 
     return 0;

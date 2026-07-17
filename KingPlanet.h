@@ -13,7 +13,7 @@ private:
 public:
     KingPlanet();
 
-    void visit();
+    void visit() override;
 };
 
 #endif
