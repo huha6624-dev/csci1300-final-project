@@ -2,13 +2,12 @@
 #include <iostream>
 using namespace std;
 
-Planet::Planet(string n, string d) {
+Planet::Planet(string n, string d, string q, string a, int reward) {
     name = n;
     description = d;
-}
-
-Planet::~Planet() {
-    // Nothing to clean up; here so derived classes destruct safely.
+    question = q;
+    answer = a;
+    starReward = reward;
 }
 
 string Planet::getName() {
@@ -19,8 +18,22 @@ string Planet::getDescription() {
     return description;
 }
 
-void Planet::visit() {
-    // Placeholder; overridden by specific planets.
+int Planet::askQuestion() {
+    cout << question << endl;
+    cout << "Your answer: ";
+    string guess;
+    getline(cin, guess);
+
+    if (guess == answer) {
+        cout << "Correct! You earn " << starReward << " star(s)." << endl;
+        return starReward;
+    } else {
+        cout << "Not quite. The answer was: " << answer << endl;
+        return 0;
+    }
+}
+
+int Planet::visit() {
     cout << description << endl;
-    cout << "(Nothing to do here yet.)" << endl;
+    return askQuestion();
 }

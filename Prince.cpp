@@ -7,6 +7,7 @@ Prince::Prince(string homePlanet) {
     currentPlanet = homePlanet;
     stars = 0;
     daysRemaining = 15;
+    water = 5;
 }
 
 string Prince::getName() {
@@ -39,16 +40,48 @@ void Prince::useDay() {
     }
 }
 
-void Prince::addDays(int amount) {
-    daysRemaining = daysRemaining + amount;
+void Prince::useDays(int amount) {
+    daysRemaining = daysRemaining - amount;
+    if (daysRemaining < 0) {
+        daysRemaining = 0;
+    }
 }
 
 bool Prince::isOutOfTime() {
     return daysRemaining <= 0;
 }
 
+int Prince::getWater() {
+    return water;
+}
+
+bool Prince::useWater() {
+    if (water > 0) {
+        water--;
+        return true;
+    }
+    return false;
+}
+
+void Prince::addItem(string item) {
+    inventory.push_back(item);
+}
+
+void Prince::displayInventory() {
+    cout << "Inventory:" << endl;
+    if (inventory.empty()) {
+        cout << "  (empty)" << endl;
+        return;
+    }
+    int total = inventory.size();
+    for (int i = 0; i < total; i++) {
+        cout << "  " << (i + 1) << ". " << inventory[i] << endl;
+    }
+}
+
 void Prince::displayStatus() {
     cout << name << " is currently on: " << currentPlanet << endl;
-    cout << "Stars collected: " << stars << endl;
+    cout << "Stars collected: " << stars << " / 10" << endl;
     cout << "Days remaining: " << daysRemaining << endl;
+    cout << "Water remaining: " << water << endl;
 }
