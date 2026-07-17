@@ -4,7 +4,7 @@ using namespace std;
 
 Rose::Rose() {
     thirst = 0;
-    wiltLimit = 5;
+    wiltLimit = 4;
 }
 
 void Rose::water() {

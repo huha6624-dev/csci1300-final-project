@@ -2,16 +2,15 @@
 #include <iostream>
 using namespace std;
 
-BusinessmanPlanet::BusinessmanPlanet(string n, string d, string q, string a, int reward)
-    : Planet(n, d, q, a, reward) {
+BusinessmanPlanet::BusinessmanPlanet(string n, string d, string q, string a, int reward, string shortcut)
+    : Planet(n, d, q, a, reward, shortcut) {
     starsForSale = 3;
     daysCost = 2;
-    lastDaysCost = 0;
 }
 
 int BusinessmanPlanet::visit() {
     cout << description << endl;
-    cout << "The Businessman says: \"Five hundred and one million...\"" << endl;
+    cout << shortcutLine << endl;
     cout << endl;
     cout << "1. Answer his question honestly for " << starReward << " star(s)" << endl;
     cout << "2. Buy " << starsForSale << " stars for " << daysCost << " days (shortcut)" << endl;
@@ -30,8 +29,4 @@ int BusinessmanPlanet::visit() {
         lastDaysCost = 0;
         return askQuestion();
     }
-}
-
-int BusinessmanPlanet::getLastDaysCost() {
-    return lastDaysCost;
 }

@@ -1,4 +1,4 @@
-The King's Planet|A tiny planet ruled by a lonely king who claims to command everything, even the stars.|What keyword is used to define a class in C++?|class|2
-The Businessman's Planet|A planet occupied by a busy man who is endlessly counting the stars he says he owns.|What symbol usually ends a C++ statement?|;|2
-The Vain Man's Planet|A small planet where a vain man lives all alone, convinced everyone admires him.|What loop always runs its body at least once?|do-while|2
-The Drunkard's Planet|A planet where a drunkard drinks to forget that he is ashamed of drinking.|What keyword makes a variable unchangeable in C++?|const|2
+The King's Planet|A tiny planet ruled by a lonely king who claims to command everything, even the stars.|What keyword is used to define a class in C++?|class|2|The King declares: "I hereby decree your answer to be correct!"
+The Businessman's Planet|A planet occupied by a busy man who is endlessly counting the stars he says he owns.|What symbol usually ends a C++ statement?|;|2|The Businessman says: "Five hundred and one million..."
+The Vain Man's Planet|A small planet where a vain man lives all alone, convinced everyone admires him.|What loop always runs its body at least once?|do-while|2|The Vain Man says: "Just tell me I am the most admired man on the planet, and I will reward you handsomely!"
+The Drunkard's Planet|A planet where a drunkard drinks to forget that he is ashamed of drinking.|What keyword makes a variable unchangeable in C++?|const|2|The Drunkard mumbles: "Have a drink with me instead, and I will hand over the stars..."

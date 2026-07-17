@@ -2,12 +2,15 @@
 #include <iostream>
 using namespace std;
 
-Planet::Planet(string n, string d, string q, string a, int reward) {
+Planet::Planet(string n, string d, string q, string a, int reward, string shortcut) {
     name = n;
     description = d;
     question = q;
     answer = a;
     starReward = reward;
+    shortcutLine = shortcut;
+    shortcutDaysCost = 1;
+    lastDaysCost = 0;
 }
 
 string Planet::getName() {
@@ -33,7 +36,33 @@ int Planet::askQuestion() {
     }
 }
 
+int Planet::offerShortcutOrQuestion() {
+    cout << shortcutLine << endl;
+    cout << endl;
+    cout << "1. Answer the question honestly for " << starReward << " star(s)" << endl;
+    cout << "2. Take the shortcut for " << starReward << " guaranteed star(s), but it costs "
+         << shortcutDaysCost << " extra day(s)" << endl;
+    cout << "Choose: ";
+
+    string pickLine;
+    getline(cin, pickLine);
+    int pick = stoi(pickLine);
+
+    if (pick == 2) {
+        lastDaysCost = shortcutDaysCost;
+        cout << "You take the shortcut. " << starReward << " star(s) earned, no questions asked." << endl;
+        return starReward;
+    } else {
+        lastDaysCost = 0;
+        return askQuestion();
+    }
+}
+
+int Planet::getLastDaysCost() {
+    return lastDaysCost;
+}
+
 int Planet::visit() {
     cout << description << endl;
-    return askQuestion();
+    return offerShortcutOrQuestion();
 }

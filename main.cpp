@@ -11,7 +11,7 @@ using namespace std;
 
 int main() {
     // --- Load NPC/planet data from file (file I/O requirement) ---
-    // Each line: name|description|question|answer|starReward
+    // Each line: name|description|question|answer|starReward|shortcutLine
     ifstream inFile("planets.txt");
     if (!inFile.is_open()) {
         cout << "Could not open planets.txt! Make sure it's in the same folder as the program." << endl;
@@ -23,14 +23,16 @@ int main() {
     vector<string> questions;
     vector<string> answers;
     vector<int> rewards;
+    vector<string> shortcuts;
 
-    string n, d, q, a, rewardText;
-    while (getline(inFile, n, '|') && getline(inFile, d, '|') && getline(inFile, q, '|') && getline(inFile, a, '|') && getline(inFile, rewardText)) {
+    string n, d, q, a, rewardText, shortcutText;
+    while (getline(inFile, n, '|') && getline(inFile, d, '|') && getline(inFile, q, '|') && getline(inFile, a, '|') && getline(inFile, rewardText, '|') && getline(inFile, shortcutText)) {
         names.push_back(n);
         descriptions.push_back(d);
         questions.push_back(q);
         answers.push_back(a);
         rewards.push_back(stoi(rewardText));
+        shortcuts.push_back(shortcutText);
     }
     inFile.close();
 
@@ -42,10 +44,10 @@ int main() {
     }
 
     // --- Build each planet as its own named object (no pointers) ---
-    KingPlanet king(names[0], descriptions[0], questions[0], answers[0], rewards[0]);
-    BusinessmanPlanet businessman(names[1], descriptions[1], questions[1], answers[1], rewards[1]);
-    Planet vainMan(names[2], descriptions[2], questions[2], answers[2], rewards[2]);
-    Planet drunkard(names[3], descriptions[3], questions[3], answers[3], rewards[3]);
+    KingPlanet king(names[0], descriptions[0], questions[0], answers[0], rewards[0], shortcuts[0]);
+    BusinessmanPlanet businessman(names[1], descriptions[1], questions[1], answers[1], rewards[1], shortcuts[1]);
+    Planet vainMan(names[2], descriptions[2], questions[2], answers[2], rewards[2], shortcuts[2]);
+    Planet drunkard(names[3], descriptions[3], questions[3], answers[3], rewards[3], shortcuts[3]);
 
     // Menu display names only (vector of strings, matches taught vector usage).
     vector<string> planetNames;
@@ -57,9 +59,10 @@ int main() {
     Prince prince("Asteroid B-612");
     Rose rose;
 
-    int businessmanInfluence = 0;
+    int shortcutsTaken = 0;
     bool gameOver = false;
     bool gameWon = false;
+    bool roseWilted = false;
 
     int choice = -1;
 
@@ -68,8 +71,9 @@ int main() {
 
     while (!gameOver && choice != 0) {
         cout << endl;
-        cout << "--- Day " << (15 - prince.getDaysRemaining() + 1) << " | Days left: " << prince.getDaysRemaining()
-             << " | Stars: " << prince.getStars() << " | Water: " << prince.getWater() << " ---" << endl;
+        cout << "--- Day " << (8 - prince.getDaysRemaining() + 1) << " | Days left: " << prince.getDaysRemaining()
+             << " | Stars: " << prince.getStars() << " | Water: " << prince.getWater()
+             << " | Rose thirst: " << rose.getThirst() << " ---" << endl;
         cout << "1. Visit a planet" << endl;
         cout << "2. Water the rose" << endl;
         cout << "3. View status" << endl;
@@ -92,30 +96,36 @@ int main() {
             int pick = stoi(pickLine);
 
             int earned = 0;
+            int daysCost = 0;
             switch (pick) {
                 case 1:
                     prince.setCurrentPlanet(king.getName());
                     earned = king.visit();
+                    daysCost = king.getLastDaysCost();
                     break;
                 case 2:
                     prince.setCurrentPlanet(businessman.getName());
                     earned = businessman.visit();
-                    if (businessman.getLastDaysCost() > 0) {
-                        prince.useDays(businessman.getLastDaysCost());
-                        businessmanInfluence++;
-                    }
+                    daysCost = businessman.getLastDaysCost();
                     break;
                 case 3:
                     prince.setCurrentPlanet(vainMan.getName());
                     earned = vainMan.visit();
+                    daysCost = vainMan.getLastDaysCost();
                     break;
                 case 4:
                     prince.setCurrentPlanet(drunkard.getName());
                     earned = drunkard.visit();
+                    daysCost = drunkard.getLastDaysCost();
                     break;
                 default:
                     cout << "That planet doesn't exist yet." << endl;
                     break;
+            }
+
+            if (daysCost > 0) {
+                prince.useDays(daysCost);
+                shortcutsTaken++;
             }
 
             if (earned > 0) {
@@ -123,9 +133,11 @@ int main() {
                 prince.addItem("Star Charm from " + prince.getCurrentPlanet());
             }
             prince.useDay();
+            rose.increaseThirst();
         } else if (choice == 2) {
             if (prince.useWater()) {
                 rose.water();
+                prince.useDay();
             } else {
                 cout << "Your canteen is empty! You have no water left to give the Rose." << endl;
             }
@@ -142,6 +154,7 @@ int main() {
             prince.displayInventory();
         } else if (choice == 5) {
             prince.useDay();
+            rose.increaseThirst();
             if (prince.getStars() >= 10) {
                 cout << endl << "You give your stars to the Snake." << endl;
                 cout << "The Snake's bite sends you home, back to your Rose." << endl;
@@ -158,6 +171,11 @@ int main() {
             cout << "That's not a valid option. Try again." << endl;
         }
 
+        if (!gameOver && rose.isWilted()) {
+            roseWilted = true;
+            gameOver = true;
+        }
+
         if (!gameOver && prince.isOutOfTime()) {
             gameOver = true;
         }
@@ -166,12 +184,15 @@ int main() {
     cout << endl << "==================================================" << endl;
     if (gameWon) {
         cout << "YOU WIN! The Prince returns home with " << prince.getStars() << " stars." << endl;
-        if (businessmanInfluence > 0) {
-            cout << "The Businessman's shortcuts helped along the way, " << endl;
-            cout << "but the town will always remember his growing influence." << endl;
+        if (shortcutsTaken > 0) {
+            cout << "You leaned on a shortcut " << shortcutsTaken << " time(s) along the way, " << endl;
+            cout << "but the stars you carry are no less real for it." << endl;
         } else {
             cout << "Every star was earned honestly, question by question." << endl;
         }
+    } else if (gameOver && roseWilted) {
+        cout << "GAME OVER: The Rose wilted from thirst while you were away." << endl;
+        cout << "Final stars collected: " << prince.getStars() << " / 10" << endl;
     } else if (gameOver) {
         cout << "GAME OVER: The days ran out before the Prince reached the Snake." << endl;
         cout << "Final stars collected: " << prince.getStars() << " / 10" << endl;

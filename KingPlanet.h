@@ -4,14 +4,14 @@
 #include "planet.h"
 
 // A specific planet, home to the lonely King. Inherits the shared
-// name/description/question interface from Planet and overrides
-// visit() with the King's own dialogue before asking his question.
+// name/description/question/shortcut interface from Planet and
+// overrides visit() with the King's own dialogue first.
 class KingPlanet : public Planet {
 private:
     bool questionAsked;
 
 public:
-    KingPlanet(string n, string d, string q, string a, int reward);
+    KingPlanet(string n, string d, string q, string a, int reward, string shortcut);
 
     int visit() override;
 };

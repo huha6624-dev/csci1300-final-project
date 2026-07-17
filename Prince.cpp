@@ -6,7 +6,7 @@ Prince::Prince(string homePlanet) {
     name = "The Little Prince";
     currentPlanet = homePlanet;
     stars = 0;
-    daysRemaining = 15;
+    daysRemaining = 8;
     water = 5;
 }
 
